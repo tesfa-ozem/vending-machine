@@ -33,13 +33,13 @@ class VendingMachine {
       (item) => item.product.uniqueCode == uniqueCode
     );
     let totalAmount = amount.reduce((a, b) => a + b, 0);
-    let unitPrice = this.selectedProduct.product.unitPrice;
+    
 
     // checks if the product is available
-    if (this.selectedProduct == undefined) {
+    if (this.selectedProduct == undefined ||this.selectedProduct==-1 ) {
       throw VendingError.ProductNotAvailable;
     }
-
+    let unitPrice = this.selectedProduct.product.unitPrice;
     // checks if the amount paid is sufficient
     if (totalAmount < unitPrice) {
       throw VendingError.InsufficintFunds;
@@ -57,7 +57,7 @@ class VendingMachine {
     let inventoryIndex = this.productInventory.findIndex(
       (item) => item.product.name == this.selectedProduct.product.name
     );
-    console.log(inventoryIndex)
+
     this.productInventory[inventoryIndex].count -= 1;
 
     return {
@@ -65,6 +65,7 @@ class VendingMachine {
         "cost_price":this.selectedProduct.product.unitPrice,
         "paid_amount":totalAmount ,
         "change":changeDue,
+        "change_breake_down":changeBreakDown
         
     }
   };
@@ -86,6 +87,9 @@ class VendingMachine {
       ) {
         amount -= this.change[i].denomination;
         change_due.push(this.change[i].denomination);
+        // Deduct money from the change register 
+        this.change[i].count -=1
+
       }
     }
 
@@ -104,7 +108,6 @@ class VendingMachine {
     let index = 0;
     for (let i = 0; i <= amount.length - 1; i++) {
       index = this.change.findIndex((j) => j.denomination == amount[i]);
-      console.log(`index ${JSON.stringify(index)}`);
 
       if (index == -1) {
         throw VendingError.WrongDenomination;
