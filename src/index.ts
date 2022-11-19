@@ -20,4 +20,4 @@ const change: Array<IChange> = [
 ];
 const vendingMachine = new VendingMachine(inventory, change);
 
-vendingMachine.buyProduct([1000], 1);
+console.log(vendingMachine.buyProduct([1000], 1));

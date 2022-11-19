@@ -1,6 +1,6 @@
 import { IChange, IProductInventory } from "./interfaces";
 import { VendingError } from "./enums";
-
+import debug from 'debug';
 
 class VendingMachine {
   productInventory: Array<IProductInventory>;
@@ -33,7 +33,7 @@ class VendingMachine {
       (item) => item.product.uniqueCode == uniqueCode
     );
     let totalAmount = amount.reduce((a, b) => a + b, 0);
-    let unitPrice = this.selectedProduct.unitPrice;
+    let unitPrice = this.selectedProduct.product.unitPrice;
 
     // checks if the product is available
     if (this.selectedProduct == undefined) {
@@ -55,9 +55,18 @@ class VendingMachine {
     }
     this.updateChange(amount);
     let inventoryIndex = this.productInventory.findIndex(
-      (item) => item.product.name == this.selectedProduct.name
+      (item) => item.product.name == this.selectedProduct.product.name
     );
+    console.log(inventoryIndex)
     this.productInventory[inventoryIndex].count -= 1;
+
+    return {
+        "product":this.selectedProduct.product.name,
+        "cost_price":this.selectedProduct.product.unitPrice,
+        "paid_amount":totalAmount ,
+        "change":changeDue,
+        
+    }
   };
 
   /**
