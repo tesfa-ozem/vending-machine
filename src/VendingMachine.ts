@@ -1,19 +1,21 @@
-import { IChange, IProductInventory } from "./interfaces";
+import { IChange } from "./interfaces";
 import { VendingError } from "./enums";
 import debug from 'debug';
+import Product from "./Product";
 
 class VendingMachine {
-  productInventory: Array<IProductInventory>;
+  productInventory: any;
   change: Array<IChange>;
   selectedProduct: any;
   constructor(
-    productInventory: Array<IProductInventory>,
+    productInventory:any,
     change: Array<IChange>,
     selectedProduct: any = null
   ) {
     this.productInventory = productInventory;
-    this.change = change;
+    this.change = change.sort((a,b) => a.denomination - b.denomination); // sort the change array
     this.selectedProduct = selectedProduct;
+
   }
   /**
    * purcheses a product from the vending machine
@@ -30,16 +32,15 @@ class VendingMachine {
    */
   public buyProduct = (amount: Array<number>, uniqueCode: number) => {
     this.selectedProduct = this.productInventory.find(
-      (item) => item.product.uniqueCode == uniqueCode
+      (item: Product) => item.uniqueCode == uniqueCode
     );
     let totalAmount = amount.reduce((a, b) => a + b, 0);
     
-
     // checks if the product is available
     if (this.selectedProduct == undefined ||this.selectedProduct==-1 ) {
       throw VendingError.ProductNotAvailable;
     }
-    let unitPrice = this.selectedProduct.product.unitPrice;
+    let unitPrice = this.selectedProduct.unitPrice;
     // checks if the amount paid is sufficient
     if (totalAmount < unitPrice) {
       throw VendingError.InsufficintFunds;
@@ -49,22 +50,18 @@ class VendingMachine {
 
     let changeBreakDown = this.getChange(changeDue);
 
-    // Checks if their is sufficient change before completing the transaction
-    if (changeBreakDown.length == 0) {
-      throw VendingError.InsufficientChange;
-    }
     this.updateChange(amount);
     let inventoryIndex = this.productInventory.findIndex(
-      (item) => item.product.name == this.selectedProduct.product.name
+      (item: Product) => item.name == this.selectedProduct.name
     );
 
     this.productInventory[inventoryIndex].count -= 1;
 
     return {
-        "product":this.selectedProduct.product.name,
-        "cost_price":this.selectedProduct.product.unitPrice,
+        "product":this.selectedProduct.name,
+        "cost_price":this.selectedProduct.unitPrice,
         "paid_amount":totalAmount ,
-        "change":changeDue,
+        "change":changeDue.toFixed(2),
         "change_breake_down":changeBreakDown
         
     }
@@ -81,12 +78,22 @@ class VendingMachine {
     let lenth = this.change.length;
 
     for (let i = lenth - 1; i >= 0; i--) {
+      // Checks if their is sufficient change before completing the transaction
+      if(this.change[i].count<=0){
+        throw VendingError.InsufficientChange;
+      }
+      
+      // Get the change due 
       while (
         this.change[i].denomination <= amount &&
         this.change[i].count != 0
       ) {
         amount -= this.change[i].denomination;
-        change_due.push(this.change[i].denomination);
+        change_due.push({
+          name:this.change[i].name,
+          denomination:this.change[i].denomination,
+
+        });
         // Deduct money from the change register 
         this.change[i].count -=1
 
@@ -96,7 +103,7 @@ class VendingMachine {
     return change_due;
   };
   /**
-   * Updates the change in the vending machine with new amounts
+   * Updates the change in the vending machine with new amounts after transacton
    *
    * @example amount = [20,50]
    * the denominations have to be valid denominations else an exception

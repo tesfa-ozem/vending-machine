@@ -1,14 +1,20 @@
-import Product from './Product'
-interface IProductInventory{
-    product:Product;
-    count:number
-}
+import Express from 'express'
+
 
 interface IChange{
+    name:string,
     denomination:number;
     count:number;
 }
-
+interface IProduct{
+name:string,
+unitPrice:number,
+uniqueCode:number,
+count:number
+}
+interface TypedRequestBody<T> extends Express.Request {
+    body: T
+}
 export {
-    IProductInventory,IChange
+    IChange,IProduct,TypedRequestBody
 }
