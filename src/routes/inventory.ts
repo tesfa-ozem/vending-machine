@@ -24,7 +24,11 @@ export class Inventory {
         .post((req: TypedRequest<{},Array<IProduct>>, res: Response) => { 
             const products = req.body  
             products.forEach(element => {
-                vendingMachine.productInventory.push(element)
+                let productIndex = vendingMachine.productInventory.findIndex(element.name)
+                if(productIndex!=-1){
+                    vendingMachine.productInventory.push(element)
+                }
+                
             });
             res.status(200).send(JSON.stringify({
                 message:"successfuly added new products",
@@ -38,9 +42,13 @@ export class Inventory {
             const {uid } = req.params
             const {count} = req.body
             let productIndex = vendingMachine.productInventory.findIndex((item:Product)=>item.uniqueCode.toString()==uid)
-            vendingMachine.productInventory[productIndex].count = count
-
-            res.status(200).send(JSON.stringify(vendingMachine.productInventory[productIndex]))
+            if(productIndex!=-1){
+                vendingMachine.productInventory[productIndex].count += count
+                res.status(200).send(JSON.stringify(vendingMachine.productInventory[productIndex]))
+            }
+           
+            res.status(404).send({message:`${uid} does not exist`})
+            
         })
 
         // remove a product
@@ -48,10 +56,13 @@ export class Inventory {
         .delete((req: TypedRequest<{uid:string},{}>, res: Response)=>{
             const {uid } = req.params
             let productIndex = vendingMachine.productInventory.findIndex((item:Product)=>item.uniqueCode.toString()==uid)
+            if(productIndex!=-1){
             vendingMachine.productInventory.splice(1, productIndex)
 
             res.status(200).send(JSON.stringify({
                 "message":`removed ${vendingMachine.productInventory[productIndex].name} from the inventory`}))
+            }
+            res.status(404).send({message:`${uid} does not exist`})
         })
 
     }

@@ -10,14 +10,26 @@ export class Transaction {
       (
         req: TypedRequest<{},{
           amount: [],
-          uniqueCode: number
+          uniqueCode: number,
+          unit?: string
         }>,
         res: Response,
-        next: NextFunction
       ) => {
         let resp:any
         try{
-            resp = vendingMachine.buyProduct(req.body.amount,req.body.uniqueCode)
+            const {amount,uniqueCode,unit} =req.body
+            if(unit=="doller"){
+                /**
+                 * 
+                 * If uint sumbmitted is in dollers convert to cents
+                 * 
+                 *  */  
+                let computedAmount = amount.map(x=>x*100)
+                resp = vendingMachine.buyProduct(computedAmount,uniqueCode)
+            }else{
+                resp = vendingMachine.buyProduct(amount,uniqueCode)
+            }
+            
         }catch(e){
             res.status(200).send({
                 error:e

@@ -1,11 +1,39 @@
 import { Request, Response } from "express";
 import { vendingMachine } from "../db";
-import { IProduct, TypedRequest } from "../interfaces";
+import { IChange, TypedRequest } from "../interfaces";
 import Change from "../models/Change";
 
 export class CashRegister {
   public routes(app: any): void {
-    // get the change in the machine
+
+    // setup change in the cash register
+    app
+      .route("/api/v1/change")
+      .post((req: TypedRequest<{}, Array<IChange>>, res: Response) => {
+        try{
+          const change = req.body
+          let error_array :Array<string> = []
+          change.forEach((item:any)=>
+            {
+              let index = vendingMachine.change.findIndex((cg:IChange)=>cg.name==item.name)
+              if(index==-1){
+                vendingMachine.change.push(item)
+              }else{
+                error_array.push(`${item.name} already exists, try updating the value`)
+              }
+            }
+            
+          )
+        
+        res.status(200).send(JSON.stringify({message:vendingMachine.change,errors:error_array}));
+        }catch(e){
+          res.status(400).send(JSON.stringify({
+            error:e
+          }))
+        }
+      });
+
+    // get available change in the machine
     app
       .route("/api/v1/change")
       .get((req: TypedRequest<{}, {}>, res: Response) => {
@@ -14,28 +42,36 @@ export class CashRegister {
 
     // replenish the change in the machine
     app
-      .route("/api/v1/inventory")
+      .route("/api/v1/change")
       .put(
         (
-          req: TypedRequest<{ cents: string }, { count: number }>,
+          req: TypedRequest<{  }, { float: Array<{name:string,count:number}> }>,
           res: Response
         ) => {
-          const { cents } = req.query;
-          const { count } = req.body;
-
-          let changeIndex = vendingMachine.change.findIndex(
-            (item: Change) => item.cents.toString() == cents
-          );
-          vendingMachine.change[changeIndex].count = count;
-          res.status(200).send(
-            JSON.stringify({
-              message: `Successfuly updated ${vendingMachine.change[changeIndex].name}`,
+          try {
+            const { float } = req.body;
+            float.forEach(item=>{
+              let changeIndex = vendingMachine.change.findIndex(
+                (change: Change) => change.name.toString() == item.name
+              );
+              vendingMachine.change[changeIndex].count += item.count;
             })
-          );
+            
+            res.status(200).send(
+              JSON.stringify({
+                message: `Successfuly updated change`,
+              })
+            );
+          } catch (error) {
+            res.status(400).send(JSON.stringify({
+              error:error
+            }))
+          }
+         
         }
       );
 
-    // withdraw change in the systm
+    // withdraw available change in the systme
     app
       .route("/api/v1/withdraw")
       .post((req: TypedRequest<{}, {amount:number,unit?:string}>, res: Response) => {
@@ -53,9 +89,9 @@ export class CashRegister {
           data:withdrawnAmount
         }));
 
-      }catch(e){
+      }catch(error){
         res.status(400).send(JSON.stringify({
-          error:e
+          error:error
         }))
       }
       });

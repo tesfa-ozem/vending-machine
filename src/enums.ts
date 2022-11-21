@@ -3,7 +3,7 @@ enum VendingError{
     ProductNotAvailable = "The selected product is not available",
     MaxWidthdrawExceeded = "You can't widthdraw more than the amorunt in the machine",
     InsufficientChange = "The vending machine has Insufficint change to complete the order",
-    Wrongcents = "The cents input is not valid"
+    WrongDenomination = "The denomination inserted is not valid"
 }
 
 export{
