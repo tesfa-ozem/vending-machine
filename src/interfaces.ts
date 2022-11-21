@@ -1,11 +1,9 @@
 import Express from 'express'
 import { Query } from 'express-serve-static-core';
 
-
-
 interface IChange{
     name:string,
-    denomination:number;
+    cents:number;
     count:number;
 }
 interface IProduct{

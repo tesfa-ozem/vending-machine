@@ -16,7 +16,6 @@ export class Transaction {
         next: NextFunction
       ) => {
         let resp:any
-        console.log(req.body.amount,req.body.uniqueCode)
         try{
             resp = vendingMachine.buyProduct(req.body.amount,req.body.uniqueCode)
         }catch(e){

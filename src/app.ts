@@ -2,18 +2,21 @@ import express from 'express'
 import * as bodyParser from 'body-parser'; //used to parse the form data that you pass in the request
 import {Inventory} from './routes/inventory'
 import {Transaction } from './routes/transactions'
+import {CashRegister} from './routes/cashRegister'
 
 class App {
 
     public app: express.Application;
     public inventoryRoutes: Inventory = new Inventory()
     public transactionRoutes: Transaction = new Transaction()
+    public cashRegisterRoutes : CashRegister = new CashRegister()
 
     constructor() {
         this.app = express(); //run the express instance and store in app
         this.config();
         this.inventoryRoutes.routes(this.app)
         this.transactionRoutes.routes(this.app)
+        this.cashRegisterRoutes.routes(this.app)
     }
 
     private config(): void {
