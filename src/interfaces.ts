@@ -1,4 +1,6 @@
 import Express from 'express'
+import { Query } from 'express-serve-static-core';
+
 
 
 interface IChange{
@@ -12,9 +14,10 @@ unitPrice:number,
 uniqueCode:number,
 count:number
 }
-interface TypedRequestBody<T> extends Express.Request {
-    body: T
+interface TypedRequest<T extends Query, U> extends Express.Request {
+    body: U,
+    query: T
 }
 export {
-    IChange,IProduct,TypedRequestBody
+    IChange,IProduct,TypedRequest
 }

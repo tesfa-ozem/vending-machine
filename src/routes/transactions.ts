@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { TypedRequestBody } from "../interfaces";
+import { TypedRequest } from "../interfaces";
 import { vendingMachine } from "../db";
 
 export class Transaction {
@@ -8,7 +8,7 @@ export class Transaction {
     // buy product
     app.route("/api/v1/buy").post(
       (
-        req: TypedRequestBody<{
+        req: TypedRequest<{},{
           amount: [],
           uniqueCode: number
         }>,
