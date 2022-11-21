@@ -4,21 +4,36 @@
 A Vending machine that keeps track of change and products in the machine.
 
 
-## Installation
+## Run Locally
 
-After cloning the repo
+Clone the project
+
+```bash
+  git clone https://github.com/tesfa-ozem/vending-machine.git
+```
+
+Go to the project directory
 
 ```bash
   cd vending-machine
-  npm install 
 ```
 
-Run the project
+Install dependencies
+
+```bash
+  npm install
+```
+
+Start the server
 
 ```bash
   npm run dev
 ```
-This will start the dev serve on port 3000
+
+Here is a postman collection for examples
+- [Postman](https://www.getpostman.com/collections/74c8ae8413419c853e29)
+
+
 ## API Reference
 
 #### Setup products
