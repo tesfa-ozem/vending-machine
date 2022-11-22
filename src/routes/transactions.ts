@@ -4,8 +4,8 @@ import { vendingMachine } from "../db";
 
 export class Transaction {
   public routes(app: any): void {
-    //received the express instance from app.ts file
     // buy product
+    // endpoint exposed to user
     app.route("/api/v1/buy").post(
       (
         req: TypedRequest<{},{

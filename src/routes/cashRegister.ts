@@ -4,9 +4,14 @@ import { IChange, TypedRequest } from "../interfaces";
 import Change from "../models/Change";
 
 export class CashRegister {
+
+  // endpoints exposed to technician
   public routes(app: any): void {
 
     // setup change in the cash register
+    /** 
+     * This endpoints will normaly require authentication
+     * */ 
     app
       .route("/api/v1/change")
       .post((req: TypedRequest<{}, Array<IChange>>, res: Response) => {
