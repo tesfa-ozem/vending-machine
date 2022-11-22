@@ -1,7 +1,7 @@
 import { IChange } from "./interfaces";
 import { VendingError } from "./enums";
 import debug from "debug";
-import Product from "./models/Product";
+import Product from "./Product";
 
 class VendingMachine {
   productInventory: any;
@@ -95,7 +95,6 @@ class VendingMachine {
 
     // compute change available
     computed_change =change_due.reduce((a,b)=>a + b.cents,0)
-    console.log(amount,computed_change)
     if(amount!=computed_change){
       
       throw VendingError.InsufficientChange

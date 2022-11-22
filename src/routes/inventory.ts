@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import { vendingMachine } from "../db";
 import {IProduct, TypedRequest } from '../interfaces'
-import Product from "../models/Product";
+import Product from "../Product";
 
 
 

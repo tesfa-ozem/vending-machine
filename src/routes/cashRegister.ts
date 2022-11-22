@@ -45,11 +45,11 @@ export class CashRegister {
       .route("/api/v1/change")
       .put(
         (
-          req: TypedRequest<{  }, { float: Array<{name:string,count:number}> }>,
+          req: TypedRequest<{  }, Array<{name:string,count:number}>>,
           res: Response
         ) => {
           try {
-            const { float } = req.body;
+            const  float  = req.body;
             float.forEach(item=>{
               let changeIndex = vendingMachine.change.findIndex(
                 (change: Change) => change.name.toString() == item.name

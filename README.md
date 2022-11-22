@@ -93,7 +93,41 @@ Pass an array of change to set up the cash register.
 ```http
   POST /api/v1/buy
 ```
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `amount`     | `array` | **Required**. The value of the denominations put in|
+| `uniqueCode`     | `string` |  Unique code of the product being bought|
+| `unit`     | `string` |  If not specified it returns the change in cents. If in dollers it returns dollers|
+
 Buy an inventory item.
+
+#### Withdraw change
+
+```http
+  POST /api/v1/withdraw
+```
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `amount`     | `number` | **Required**. The amount to withdraw |
+| `unit`     | `string` |  If not specified it returns the change in cents. If in dollers it returns dollers|
+
+Withdraw change from the machine.
+
+#### Get available change in the machine
+
+```http
+  GET /api/v1/change
+```
+
+Returns the available change in the machine
+
+#### Update change
+
+```http
+  PUT /api/v1/change
+```
+
+Pass an array of change objects to update change
 ## Authors
 
 - [@tesfa-ozem](https://www.github.com/tesfa-ozem)
